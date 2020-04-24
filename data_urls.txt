@@ -1,0 +1,3 @@
+https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv
+https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv
+https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality.names
