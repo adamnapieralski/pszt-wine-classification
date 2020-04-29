@@ -31,6 +31,6 @@ with open('data_urls.txt') as f:
 for url in data_urls:
     print("Downloading " + data_dir_path + os.path.basename(url).rstrip() + "...")
     datafile = urllib.URLopener()
-    datafile.retrieve(url, data_dir_path + os.path.basename(url))
+    datafile.retrieve(url, data_dir_path + os.path.basename(url).rstrip())
     print("Finished downloading.")
 
