@@ -1,3 +1,9 @@
+"""Gradient Boosting Classifier class module.
+
+Implements Gradient Boosting algorithm for classification.
+"""
+__author__ = "Napieralski Adam, Kostrzewa Lukasz"
+
 import numpy as np
 import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
@@ -12,7 +18,7 @@ class GradientBoostingClassifier:
         self.verbosity = verbosity
 
     def fit(self, X, y):
-        """Fit the gradient boosting model.
+        """Fit the gradient boosting model to the training input data.
 
         Parameters:
         X - array with input samples, shape (n_samples, n_features) 
@@ -65,4 +71,3 @@ class GradientBoostingClassifier:
         y_consts = np.repeat(y_uniques, y.shape[0]).reshape((y_uniques.shape[0], y.shape[0]))
         sums = np.sum(self.compute_loss(y, y_consts), axis=1)
         self.y_const_initial = y_uniques[np.argmin(sums)]
-        
