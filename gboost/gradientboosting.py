@@ -51,6 +51,14 @@ class GradientBoostingClassifier:
             prediction += self.learning_rate * f.predict(X)
         return prediction
 
+    def score(self, X, y):
+        y_predicted = self.predict(X)
+        correct = 0
+        for i in range(y.size):
+            if round(y_predicted[i]) == y[i]:
+                correct += 1
+        return correct / y.size
+
     def compute_loss(self, y, y_hat):
         loss = []
         if self.loss_function == "mse":
