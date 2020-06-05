@@ -60,7 +60,7 @@ class DecisionTree():
             return Node(y[0])
 
         #split
-        feature_index, feature_cutoff_value, _ = self._find_best_split(x, y)
+        feature_index, feature_cutoff_value = self._find_best_split(x, y)
         
         node_value = np.round(np.mean(y))
 
@@ -111,10 +111,6 @@ class DecisionTree():
             H += s.size / size * self._entropy(s)
         return H
 
-    def _information_gain(self, sets):
-        return self._entropy(sets.flatten()) - self._subsets_entropy(sets)
-
-
     def _find_best_split_for_feature(self, feature, target):
         """
         Finds the split value in the feature array that minimizes
@@ -152,12 +148,12 @@ class DecisionTree():
         for feature_ind, feature in enumerate(X.T):
             entropy, cutoff_value = self._find_best_split_for_feature(feature, Y)
             if entropy == 0:
-                return feature_ind, cutoff_value, entropy
+                return feature_ind, cutoff_value
             elif entropy < min_entropy:
                 min_entropy = entropy
                 best_feature_index = feature_ind
                 best_feature_cutoff_value = cutoff_value
-        return best_feature_index, best_feature_cutoff_value, min_entropy 
+        return best_feature_index, best_feature_cutoff_value 
 
 
 
@@ -174,6 +170,7 @@ if __name__ == "__main__":
     
     correct_predictions = 0
     for i in range(y.shape[0]):
-        correct_predictions += 1
+        if y[i] == yy[i]:
+            correct_predictions += 1
         print(y[i], yy[i])
     print('results: ', correct_predictions / y.shape[0] * 100, '%')
