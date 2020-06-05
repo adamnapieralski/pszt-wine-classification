@@ -69,12 +69,21 @@ class DecisionTree():
         #left child
         left_node_x = x[x[:, feature_index] < feature_cutoff_value]        
         left_node_y = y[x[:, feature_index] < feature_cutoff_value]        
-        node.left_child = self._build_decision_tree(left_node_x, left_node_y, depth+1) 
+        left_node_x = np.delete(left_node_x, feature_index, 1)
+        if left_node_x.size > 0:
+            node.left_child = self._build_decision_tree(left_node_x, left_node_y, depth+1) 
+        else:
+            node.left_child = None
+
 
         #right child
         right_node_x = x[x[:, feature_index] >= feature_cutoff_value]        
         right_node_y = y[x[:, feature_index] >= feature_cutoff_value]        
-        node.right_child = self._build_decision_tree(right_node_x, right_node_y, depth+1)
+        right_node_x = np.delete(right_node_x, feature_index, 1)
+        if right_node_x.size > 0:
+            node.right_child = self._build_decision_tree(right_node_x, right_node_y, depth+1)
+        else:
+            node.right_child = None
               
 
         self.depth += 1
@@ -163,5 +172,8 @@ if __name__ == "__main__":
     tree.fit(x, y)
     yy = tree.predict(x)
     
+    correct_predictions = 0
     for i in range(y.shape[0]):
+        correct_predictions += 1
         print(y[i], yy[i])
+    print('results: ', correct_predictions / y.shape[0] * 100, '%')
