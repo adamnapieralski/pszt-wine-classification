@@ -111,12 +111,8 @@ class DecisionTree():
     def _entropy(self, S):
         """Entropy of the given set of values    
         """
-        _, occurances_count = np.unique(S, return_counts=True)    
-        H = 0
-        for count in occurances_count:
-            p = count / S.size        
-            H += p * np.log(p)
-        return -H
+        occurances_count = np.unique(S, return_counts=True)[1] / S.size   
+        return -1 * np.sum(occurances_count * np.log(occurances_count)) 
 
     def _subsets_entropy(self, sets):
         """
@@ -139,10 +135,14 @@ class DecisionTree():
         let target = [1,1,1,3,3]
         the function returns the value 4 and the weighted sum of entropies
         for [1, 1, 1] and [3, 3] subsets
-        """
+        """               
+        
+        f = np.unique(feature)
+
         min_entropy = 10000000000    
-        cutoff_value = None
-        for value in feature:
+        cutoff_value = f[0]
+
+        for value in f:            
             group_1 = target[feature < value]
             group_2 = target[feature >= value]
             entropy = self._subsets_entropy(np.array([group_1, group_2]))
