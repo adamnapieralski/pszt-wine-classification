@@ -7,6 +7,7 @@ __author__ = "Napieralski Adam, Kostrzewa Lukasz"
 import numpy as np
 import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
+import gboost
 
 class GradientBoostingClassifier:
 
@@ -33,14 +34,15 @@ class GradientBoostingClassifier:
 
         for i in range(self.n_estimators):
             residuals = self.compute_residuals(y, self.predict(X))
-            regressor = DecisionTreeRegressor(max_depth=self.max_depth)
+            regressor = gboost.DecisionTree(max_depth=self.max_depth)
+            # regressor = DecisionTreeRegressor(max_depth=self.max_depth)            
             regressor.fit(X, residuals)
             self.f_models.append(regressor)
 
             if self.verbosity:
                 print("Step: {}".format(i))
                 print(" Residuals: {}".format(residuals))
-                print(" Predictions: {}".format(self.predict(X)))
+                # print(" Predictions: {}".format(self.predict(X)))
 
     def predict(self, X):
         prediction = np.repeat(self.y_const_initial, X.shape[0]).astype(np.float64)
