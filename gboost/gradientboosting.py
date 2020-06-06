@@ -26,7 +26,6 @@ class GradientBoostingClassifier:
         Y - array with target values, correspnding to input samples, shape (n_samples,)
         """
         self.f_models = []
-        # self.gammas = [] # if learning rate calculated at each iteration
 
         self.compute_initial_y_const(y)
         if self.verbosity:
