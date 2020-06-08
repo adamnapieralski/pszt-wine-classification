@@ -1,8 +1,17 @@
+"""Decision Tree Classifier
+
+Implements Decision Tree Classifier that is generated using ID3 algorithm.
+"""
+__author__ = "Napieralski Adam, Kostrzewa Lukasz"
+
 import numpy as np 
 from sklearn.datasets import load_iris
 
 class Node():
-    def __init__(self, value=None, split_feature_index=None, feature_cutoff=None, left_child=None, right_child=None):
+    """Represents decision tree node.
+    """
+    def __init__(self, value=None, split_feature_index=None, feature_cutoff=None,
+                 left_child=None, right_child=None):
         self.value = value
         self.split_feature_index = split_feature_index
         self.feature_cutoff = feature_cutoff
@@ -10,6 +19,11 @@ class Node():
         self.right_child = right_child
 
 class DecisionTree():
+    """
+    Decision Tree Classifier implemented using ID3 algorithm. The algorithm uses
+    inforamtion gain criterion. Its interface was implemented based on
+    Scikit-learn Decision Trees.
+    """
 
     def __init__(self, max_depth=4):
         self.depth = 0
@@ -17,11 +31,13 @@ class DecisionTree():
         self.tree_root = None
             
     def fit(self, X, Y):
-        """Creates decision tree 
+        """Creates decision tree.
         """
         self.tree_root = self._build_decision_tree(X,Y)
 
     def predict(self, X):
+        """Predicts categories for the given data.
+        """
         if self.tree_root is None:
             print('Error, decision tree not trained')
             return
@@ -31,6 +47,8 @@ class DecisionTree():
         return Y
 
     def _predict_single(self, x):
+        """Predict category for the single data row.
+        """
         node = self.tree_root
         while node.feature_cutoff is not None:
             if x[node.split_feature_index] < node.feature_cutoff:
@@ -55,14 +73,14 @@ class DecisionTree():
         if parent_node is None or y.size == 0 or depth > self.max_depth:
             return None
 
-        # all values the same, no further recursion
+        # all values the same, no further recursion needed
         if np.all(y == y[0]):
             return Node(y[0])
 
         #split
         feature_index, feature_cutoff_value = self._find_best_split(x, y)
         
-        node_value = np.round(np.mean(y))
+        node_value = np.mean(y)
 
         node = Node(value=node_value, split_feature_index=feature_index, feature_cutoff=feature_cutoff_value)
 
@@ -93,12 +111,8 @@ class DecisionTree():
     def _entropy(self, S):
         """Entropy of the given set of values    
         """
-        _, occurances_count = np.unique(S, return_counts=True)    
-        H = 0
-        for count in occurances_count:
-            p = count / S.size        
-            H += p * np.log(p)
-        return -H
+        occurances_count = np.unique(S, return_counts=True)[1] / S.size   
+        return -1 * np.sum(occurances_count * np.log(occurances_count)) 
 
     def _subsets_entropy(self, sets):
         """
@@ -114,17 +128,21 @@ class DecisionTree():
     def _find_best_split_for_feature(self, feature, target):
         """
         Finds the split value in the feature array that minimizes
-        the entropy computed using target array
+        the entropy computed using target array.
         
         Example:
         let feature = [1,2,3,4,5]
         let target = [1,1,1,3,3]
         the function returns the value 4 and the weighted sum of entropies
         for [1, 1, 1] and [3, 3] subsets
-        """
+        """               
+        
+        f = np.unique(feature)
+
         min_entropy = 10000000000    
-        cutoff_value = None
-        for value in feature:
+        cutoff_value = f[0]
+
+        for value in f:            
             group_1 = target[feature < value]
             group_2 = target[feature >= value]
             entropy = self._subsets_entropy(np.array([group_1, group_2]))
@@ -136,11 +154,10 @@ class DecisionTree():
 
     def _find_best_split(self, X, Y):
         """
-        Finds the best split value
+        Finds the best split value.
         returns:
         the index of the best fature to split
-        the best cutoff value
-        the minimum entropy
+        the best cutoff value        
         """
         best_feature_index = None
         min_entropy = 10000000000
@@ -158,6 +175,8 @@ class DecisionTree():
 
 
 if __name__ == "__main__":    
+    """Run test using iris dataset.
+    """
 
     iris = load_iris()
 
@@ -170,7 +189,7 @@ if __name__ == "__main__":
     
     correct_predictions = 0
     for i in range(y.shape[0]):
-        if y[i] == yy[i]:
+        if y[i] == round(yy[i]):
             correct_predictions += 1
-        print(y[i], yy[i])
+        print(y[i], round(yy[i]))
     print('results: ', correct_predictions / y.shape[0] * 100, '%')
