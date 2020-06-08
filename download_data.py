@@ -1,6 +1,6 @@
 import os
 import shutil
-import urllib
+import urllib.request
 
 # create data directory
 data_dir_path = 'data/'
@@ -30,7 +30,7 @@ with open('data_urls.txt') as f:
     
 for url in data_urls:
     print("Downloading " + data_dir_path + os.path.basename(url).rstrip() + "...")
-    datafile = urllib.URLopener()
-    datafile.retrieve(url, data_dir_path + os.path.basename(url).rstrip())
+    with urllib.request.urlopen(url) as response, open(data_dir_path + os.path.basename(url).rstrip(), 'wb') as out_file:
+        shutil.copyfileobj(response, out_file)    
     print("Finished downloading.")
 
