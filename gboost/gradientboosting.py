@@ -5,8 +5,6 @@ Implements Gradient Boosting algorithm for classification.
 __author__ = "Napieralski Adam, Kostrzewa Lukasz"
 
 import numpy as np
-import pandas as pd
-from sklearn.tree import DecisionTreeRegressor
 import gboost
 
 class GradientBoostingClassifier:
@@ -23,7 +21,7 @@ class GradientBoostingClassifier:
 
         Parameters:
         X - array with input samples, shape (n_samples, n_features) 
-        Y - array with target values, correspnding to input samples, shape (n_samples,)
+        Y - array with target values, corresponding to input samples, shape (n_samples,)
         """
         self.f_models = []
 
@@ -34,25 +32,38 @@ class GradientBoostingClassifier:
         for i in range(self.n_estimators):
             residuals = self.compute_residuals(y, self.predict(X))
             regressor = gboost.DecisionTree(max_depth=self.max_depth)
-            # regressor = DecisionTreeRegressor(max_depth=self.max_depth)            
             regressor.fit(X, residuals)
             self.f_models.append(regressor)
 
             if self.verbosity:
                 print("Step: {}".format(i))
                 print(" Residuals: {}".format(residuals))
-                # print(" Predictions: {}".format(self.predict(X)))
 
     def predict(self, X):
+        """Predict classes for data records with attributes using already fitted model
+        for the corresponding dat.,
+
+        Parameters:
+        X - array with input samples, shape (n_samples, n_features) 
+
+        Returns:
+        y - array with predicted target values, shape (n_samples,)
+        """
         prediction = np.repeat(self.y_const_initial, X.shape[0]).astype(np.float64)
-        # # if learning rate calculated at each iteration
-        # for f, y in zip(self.f_models, self.gammas):
-        #     prediction += y * f.predict(X)
         for f in self.f_models:
             prediction += self.learning_rate * f.predict(X)
         return prediction
 
     def score(self, X, y):
+        """Calculate score of the fitted model prediction.
+
+        Parameters:
+        X - array with input samples, shape (n_samples, n_features) 
+        y - array with target values, corresponding to input samples, shape (n_samples,)
+
+        Returns:
+        score - fraction of data records that has been correctly predicted
+        """
         y_predicted = self.predict(X)
         correct = 0
         for i in range(y.size):

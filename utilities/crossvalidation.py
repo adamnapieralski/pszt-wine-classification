@@ -2,6 +2,20 @@ import numpy as np
 import statistics as stat
 
 def kfold(classifier, X, y, k=5, random_seed=-1):
+    """Execute k-fold cross-validation on data provided with specified classifier model.
+
+    Parameters:
+    classifier - classifier model
+    X - array with input samples, shape (n_samples, n_features) 
+    Y - array with target values, corresponding to input samples, shape (n_samples,)
+    k - number of folds data will be partioned into
+    random_seed - random seed for data partitioning
+
+    Return:
+    scores - list of scores for model predictions on all k folds
+    mean - mean of all scores
+    variance - variance of all scores
+    """
     if (random_seed > 0):
         np.random.seed(random_seed)
     scores = []
